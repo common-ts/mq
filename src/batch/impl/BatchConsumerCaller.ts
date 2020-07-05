@@ -7,7 +7,7 @@ export class BatchConsumerCaller<T> implements ConsumerCaller<T> {
   constructor(private batchWorker: BatchWorker<T>, private validator: Validator<T>) {
   }
 
-  call(msg: Message<T>, err?: Error, ctx?: any): Promise<void> {
+  call(msg: Message<T>, err?: Error, ctx?: any): void {
     if (err) {
       console.log('Error: ', err);
       return;
@@ -20,7 +20,7 @@ export class BatchConsumerCaller<T> implements ConsumerCaller<T> {
       this.batchWorker.onConsume(msg, ctx);
       return;
     }
-    return this.validator.validate(msg, ctx).then(() => {
+    this.validator.validate(msg, ctx).then(() => {
       this.batchWorker.onConsume(msg, ctx);
     }).catch(err2 => {
       console.log('Do not proceed empty message', err2);
